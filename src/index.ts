@@ -11,12 +11,14 @@ import {
   eosPublicKey,
   hex2a,
   isValidChecksumAddress as rskIsValidChecksumAddress,
+  ss58Decode,
+  ss58Encode,
   stripHexPrefix as rskStripHexPrefix,
   toChecksumAddress as rskToChecksumAddress,
   ua2hex
 } from 'crypto-addr-codec';
-import { decode as bs58checkDecode, encode as bs58checkEncode } from './bs58';
-import { ss58Decode, ss58Encode } from './ss58';
+import { decode as bs58Decode, encode as bs58Encode } from './bs58';
+// import { encode, decode } from './bs58'
 
 interface IFormat {
   coinType: number;
@@ -38,13 +40,14 @@ function makeBase58CheckEncoder(p2pkhVersion: number, p2shVersion: number): (dat
           throw Error('Unrecognised address format');
         }
         addr = Buffer.concat([Buffer.from([p2pkhVersion]), data.slice(3, 3 + data.readUInt8(2))]);
-        return bs58checkEncode(addr);
+        // @ts-ignore
+        return bs58Encode(addr);
       case 0xa9: // P2SH: OP_HASH160 <scriptHash> OP_EQUAL
         if (data.readUInt8(data.length - 1) !== 0x87) {
           throw Error('Unrecognised address format');
         }
         addr = Buffer.concat([Buffer.from([p2shVersion]), data.slice(2, 2 + data.readUInt8(1))]);
-        return bs58checkEncode(addr);
+        return bs58Encode(addr);
       default:
         throw Error('Unrecognised address format');
     }
@@ -53,7 +56,7 @@ function makeBase58CheckEncoder(p2pkhVersion: number, p2shVersion: number): (dat
 
 function makeBase58CheckDecoder(p2pkhVersions: number[], p2shVersions: number[]): (data: string) => Buffer {
   return (data: string) => {
-    const addr = bs58checkDecode(data);
+    const addr = bs58Decode(data);
     const version = addr.readUInt8(0);
     if (p2pkhVersions.includes(version)) {
       return Buffer.concat([Buffer.from([0x76, 0xa9, 0x14]), addr.slice(1), Buffer.from([0x88, 0xac])]);
@@ -266,6 +269,8 @@ function strEncoder(data: Buffer): string {
   return encodeEd25519PublicKey('ed25519PublicKey', data)
 }
 
+// @ts-ignore
+// @ts-ignore
 const formats: IFormat[] = [
   bitcoinChain('BTC', 0, 'bc', [0x00], [0x05]),
   bitcoinChain('LTC', 2, 'ltc', [0x30], [0x32, 0x05]),
@@ -308,8 +313,8 @@ const formats: IFormat[] = [
   },
   {
     coinType: 195,
-    decoder: bs58checkDecode,
-    encoder: bs58checkEncode,
+    decoder: bs58Decode,
+    encoder: bs58Encode,
     name: 'TRX',
   },
   {
