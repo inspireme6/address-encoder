@@ -11,7 +11,7 @@
     "prepare": "npm run build",
     "prepublishOnly": "npm run test",
     "sized": "browserify src/internal/index.js -p [tsify --noImplicitAny] | wc -c",
-    "size": "browserify src/index.ts -p [tsify --noImplicitAny] > wc.js",
+    "size": "browserify src/index.ts -p [tsify --noImplicitAny] | wc -c",
     "test": "jest --config jestconfig.json"
   },
   "files": [
