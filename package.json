@@ -42,7 +42,7 @@
     "bech32": "^1.1.3",
     "blakejs": "^1.1.0",
     "cashaddrjs": "^0.3.8",
-    "crypto-addr-codec": "inspireme6/crypto-addr-serialize#ffe498bb4407ab99226aa4656f733e6a4226835b",
+    "crypto-addr-codec": "inspireme6/crypto-addr-serialize#0f5571daecd6be5dea0e4aa29e11784001e9cf76",
     "tsify": "^4.0.1"
   }
 }
