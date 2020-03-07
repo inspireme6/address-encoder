@@ -233,6 +233,9 @@ function b32encodeXemAddr(data: Buffer): string {
 }
 
 function b32decodeXemAddr(data: string): Buffer {
+  if (!isValidXemAddress(data)) {
+    throw Error('Unrecognised address format');
+  }
   const address = data.toString().toUpperCase().replace(/-/g, '');
   return ua2hex(b32decode(address))
 }
